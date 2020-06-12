@@ -2473,6 +2473,17 @@ Default: .true., except for carma=cirrus and carma=carma_dust
 </entry>
 
 <!-- micro_mg -->
+<entry id="macro_iced_dc" type="real" category="microphys"
+       group="micro_mg_nl" valid_values="" >
+Detrained ice diameter from deep convection.
+Default: 25e-6 for micro_mg lt 4, 50e-6 for micro_mg4
+</entry>
+
+<entry id="macro_iced_sc" type="real" category="microphys"
+       group="micro_mg_nl" valid_values="" >
+Detrained ice diameter from deep convection.
+Default: 50e-6 for micro_mg lt 4, 50e-6 for micro_mg4
+</entry>
 
 <entry id="micro_mg_version" type="integer" category="microphys"
        group="micro_mg_nl" valid_values="" >
@@ -2510,17 +2521,22 @@ Default: .true.
 <entry id="micro_mg_do_graupel" type="logical" category="microphys"
        group="micro_mg_nl" valid_values="" >
 Switch to control whether MG microphysics should prognose
-dense precipitating ice as graupel. mg3 only.
+dense precipitating ice as graupel. mg3 and mg4 only.
 Default: .true. for mg3
 </entry>
 
 <entry id="micro_mg_do_hail" type="logical" category="microphys"
        group="micro_mg_nl" valid_values="" >
 Switch to control whether MG microphysics should prognose
-dense precipitating ice as hail. mg3 only.
+dense precipitating ice as hail. mg3 and mg4 only.
 Default: .false.
 </entry>
 
+<entry id="micro_mg_lkuptbl_filename" type="char*256" category="microphys"
+       group="micro_mg_nl" valid_values="" >
+Path to look-up table file for unified ice microphysics in MG4.
+Default: '.'
+</entry>
 
 <entry id="micro_mg_num_steps" type="integer" category="microphys"
        group="micro_mg_nl" valid_values="" >
@@ -2678,7 +2694,11 @@ level from 100 to 125 hPa applied only in the polar regions (false).
 Default: .true.
 </entry>
 
-
+<entry id="nucleate_ice_so4_dia" type="real" category="microphys"
+       group="nucleate_ice_nl" valid_values="" >
+Minimum diameter of sulfate particles used in ice nucleation.
+Default: set by build-namelist
+</entry>
 
 
 <!-- hkconv Moist Convection -->
