@@ -123,6 +123,13 @@ character(len=16) :: micro_mg_precip_frac_method = 'max_overlap' ! type of preci
 
 real(r8)          :: micro_mg_berg_eff_factor    = 1.0_r8        ! berg efficiency factor
 
+!++ trude
+real(r8)          :: micro_mg_vtrmi_factor = 1.0_r8  ! ice fall speed factor
+real(r8)          :: micro_mg_effi_factor = 1.0_r8  ! ice effective radius factor
+real(r8)          :: micro_mg_iaccr_factor = 1.0_r8 ! ice accretion of cloud droplet
+real(r8)          :: micro_mg_max_nicons = 500.e3_r8 ! max allowd ice number concentration
+!-- trude
+
 logical, public :: do_cldliq ! Prognose cldliq flag
 logical, public :: do_cldice ! Prognose cldice flag
 
@@ -293,7 +300,11 @@ subroutine micro_mg_cam_readnl(nlfile)
        micro_mg_berg_eff_factor, micro_do_sb_physics, micro_mg_adjust_cpt, &
        micro_mg_do_hail, micro_mg_do_graupel,micro_mg_ngcons, micro_mg_ngnst,&
        micro_mg_nccons, micro_mg_nicons, micro_mg_ncnst, micro_mg_ninst,&
-       micro_mg_lkuptbl_filename, micro_do_massless_droplet_destroyer
+       micro_mg_lkuptbl_filename, micro_do_massless_droplet_destroyer, &
+! ++ trude
+       micro_mg_vtrmi_factor, micro_mg_effi_factor, micro_mg_iaccr_factor,&
+       micro_mg_max_nicons
+! -- trude
 
   !-----------------------------------------------------------------------------
 
@@ -395,6 +406,21 @@ subroutine micro_mg_cam_readnl(nlfile)
   call mpi_bcast(micro_mg_berg_eff_factor, 1, mpi_real8, mstrid, mpicom, ierr)
   if (ierr /= 0) call endrun(sub//": FATAL: mpi_bcast: micro_mg_berg_eff_factor")
 
+!++ trude
+  call mpi_bcast(micro_mg_vtrmi_factor, 1, mpi_real8, mstrid, mpicom, ierr)
+  if (ierr /= 0) call endrun(sub//": FATAL: mpi_bcast: micro_mg_vtrmi_factor")
+
+  call mpi_bcast(micro_mg_effi_factor, 1, mpi_real8, mstrid, mpicom, ierr)
+  if (ierr /= 0) call endrun(sub//": FATAL: mpi_bcast: micro_mg_effi_factor")
+
+  call mpi_bcast(micro_mg_iaccr_factor, 1, mpi_real8, mstrid, mpicom, ierr)
+  if (ierr /= 0) call endrun(sub//": FATAL: mpi_bcast: micro_mg_iaccr_factor")
+
+  call mpi_bcast(micro_mg_max_nicons, 1, mpi_real8, mstrid, mpicom, ierr)
+  if (ierr /= 0) call endrun(sub//": FATAL: mpi_bcast: micro_mg_max_nicons")
+
+!-- trude
+
   call mpi_bcast(micro_mg_precip_frac_method, 16, mpi_character, mstrid, mpicom, ierr)
   if (ierr /= 0) call endrun(sub//": FATAL: mpi_bcast: micro_mg_precip_frac_method")
 
@@ -445,6 +471,12 @@ subroutine micro_mg_cam_readnl(nlfile)
      write(iulog,*) '  microp_uniform              = ', microp_uniform
      write(iulog,*) '  micro_mg_dcs                = ', micro_mg_dcs
      write(iulog,*) '  micro_mg_berg_eff_factor    = ', micro_mg_berg_eff_factor
+!++ trude
+     write(iulog,*) '  micro_mg_vtrmi_factor    = ', micro_mg_vtrmi_factor
+     write(iulog,*) '  micro_mg_effi_factor     = ', micro_mg_effi_factor
+     write(iulog,*) '  micro_mg_iaccr_factor    = ', micro_mg_iaccr_factor
+     write(iulog,*) '  micro_mg_max_nicons              = ', micro_mg_max_nicons
+!-- trude
      write(iulog,*) '  micro_mg_precip_frac_method = ', micro_mg_precip_frac_method
      write(iulog,*) '  micro_do_sb_physics         = ', micro_do_sb_physics
      write(iulog,*) '  micro_mg_adjust_cpt         = ', micro_mg_adjust_cpt
@@ -850,6 +882,10 @@ subroutine micro_mg_cam_init(pbuf2d)
               micro_mg_do_hail,micro_mg_do_graupel, &
               microp_uniform, do_cldice, use_hetfrz_classnuc, &
               micro_mg_precip_frac_method, micro_mg_berg_eff_factor, &
+!++ trude
+              micro_mg_vtrmi_factor, micro_mg_effi_factor, micro_mg_iaccr_factor, &
+              micro_mg_max_nicons, &
+!-- trude              
               allow_sed_supersat, micro_do_sb_physics, &
               micro_mg_nccons, micro_mg_nicons, micro_mg_ncnst, &
               micro_mg_ninst, errstring)
@@ -3400,8 +3436,8 @@ subroutine micro_mg_cam_tend_pack(state, ptend, dtime, pbuf, mgncol, mgcols, nle
 
                 niic_grid(i,k) = min(niic_grid(i,k),f1pr9)
                 niic_grid(i,k) = max(niic_grid(i,k),f1pr10)
-                niic_grid(i,k) = min(niic_grid(i,k), 500.e3_r8)
-
+!                niic_grid(i,k) = min(niic_grid(i,k), 500.e3_r8)
+                niic_grid(i,k) = min(niic_grid(i,k), micro_mg_max_nicons)
                 ! find index for Ni (ice number mixing ratio)
                 dum22 = (dlog10(niic_grid(i,k))+10._r8)*1.10731_r8
                 dumk = int(dum22)
@@ -3414,6 +3450,9 @@ subroutine micro_mg_cam_tend_pack(state, ptend, dtime, pbuf, mgncol, mgcols, nle
       
                 call access_lookup_table(dumtt,dumit,dumk,6,dum11,dum22,dum4,f1pr6)
                 call access_lookup_table(dumtt,dumit,dumk,12,dum11,dum22,dum4,f1pr12)
+!++ trude
+                f1pr6 = f1pr6*micro_mg_effi_factor
+!-- trude
 
                 rei_grid(i,k) = f1pr6*1.e6_r8   ! f1pr6 is in meter, effi is in micrometer 
              else ! if(icimrst_grid > qsmall)	
