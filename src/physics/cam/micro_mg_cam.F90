@@ -123,7 +123,7 @@ character(len=16) :: micro_mg_precip_frac_method = 'max_overlap' ! type of preci
 
 real(r8)          :: micro_mg_berg_eff_factor    = 1.0_r8        ! berg efficiency factor
 
-!++ trude
+!++ trude for namelist
 real(r8)          :: micro_mg_vtrmi_factor = 1.0_r8  ! ice fall speed factor
 real(r8)          :: micro_mg_effi_factor = 1.0_r8  ! ice effective radius factor
 real(r8)          :: micro_mg_iaccr_factor = 1.0_r8 ! ice accretion of cloud droplet
