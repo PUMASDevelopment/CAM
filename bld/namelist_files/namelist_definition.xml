@@ -2557,6 +2557,29 @@ Efficiency factor for berg
 Default: 1
 </entry>
 
+<entry id="micro_mg_accre_enhan_fact" type="real" category="microphys"
+       group="micro_mg_nl" valid_values="" >
+Accretion enhancment factor
+Default: 1
+</entry>
+
+<entry id="micro_mg_autocon_fact" type="real" category="microphys"
+       group="micro_mg_nl" valid_values="" >
+Autoconversion prefactor
+Default: 0.001
+</entry>
+
+<entry id="micro_mg_autocon_exp" type="real" category="microphys"
+       group="micro_mg_nl" valid_values="" >
+Autoconversion exponent
+Default: -1.1
+
+<entry id="micro_mg_homog_size" type="real" category="microphys"
+       group="micro_mg_nl" valid_values="" >
+Size of droplets feezing homogeneously 
+Default: 1
+</entry>
+
 <entry id="micro_mg_vtrmi_factor" type="real" category="microphys"
        group="micro_mg_nl" valid_values="" >
 Ice fall speed factor
@@ -2566,7 +2589,7 @@ Default: 1
 <entry id="micro_mg_effi_factor" type="real" category="microphys"
        group="micro_mg_nl" valid_values="" >
 Ice effective radius factor
-Default: 1
+Default: 25.e-6
 </entry>
 
 <entry id="micro_mg_iaccr_factor" type="real" category="microphys"
@@ -2578,7 +2601,7 @@ Default: 1
 <entry id="micro_mg_max_nicons" type="real" category="microphys"
        group="micro_mg_nl" valid_values="" >
 Maximum allowed ice number concentration
-Default: 500.r3_r8
+Default: 500.e3
 </entry>A
 <entry id="micro_do_sb_physics" type="logical" category="microphys"
        group="micro_mg_nl" valid_values="" >
