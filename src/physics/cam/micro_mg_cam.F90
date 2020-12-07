@@ -132,7 +132,7 @@ real(r8)           :: micro_mg_homog_size = 25.e-6_r8! size of freezing homogene
 real(r8)          :: micro_mg_vtrmi_factor = 1.0_r8  ! ice fall speed factor
 real(r8)          :: micro_mg_effi_factor = 1.0_r8  ! ice effective radius factor
 real(r8)          :: micro_mg_iaccr_factor = 1.0_r8 ! ice accretion of cloud droplet
-real(r8)          :: micro_mg_max_nicons = 500.e3_r8 ! max allowd ice number concentration
+real(r8)          :: micro_mg_max_nicons = 100000.e3_r8 ! max allowed ice number concentration
 !-- trude
 
 logical, public :: do_cldliq ! Prognose cldliq flag
@@ -877,6 +877,8 @@ subroutine micro_mg_cam_init(pbuf2d)
            micro_mg_precip_frac_method, micro_mg_berg_eff_factor, &
            micro_mg_accre_enhan_fact , &  !++ trude
            micro_mg_autocon_fact , micro_mg_autocon_exp, micro_mg_homog_size, & ! ++ trude
+           micro_mg_vtrmi_factor, micro_mg_effi_factor, micro_mg_iaccr_factor, & ! ++ trude
+           micro_mg_max_nicons, & ! ++trude
            allow_sed_supersat, micro_do_sb_physics, &
            micro_mg_nccons, micro_mg_nicons, micro_mg_ncnst, &
            micro_mg_ninst, micro_mg_ngcons, micro_mg_ngnst, errstring)
